@@ -4,6 +4,7 @@ import {
   InputSelectGender,
   InputSelectCategory,
 } from "../../components/layout/Input";
+import { Button } from "antd";
 
 const UserAdd = () => {
   return (
@@ -22,6 +23,9 @@ const UserAdd = () => {
         <Input label="City" name="city" type="text" />
         <Input label="Country" name="country" type="text" />
         <Input label="Photo" name="photo" type="text" />
+        <Button type="primary" htmlType="submit" size="large">
+          Add user
+        </Button>
       </div>
     </div>
   );

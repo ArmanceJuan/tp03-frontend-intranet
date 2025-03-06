@@ -4,7 +4,7 @@ import { Button } from "antd";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../store/apiSlice.jsx";
-import { setToken } from "../store/authSlice.jsx";
+import { setCredentials } from "../store/authSlice.jsx";
 import { Input } from "../components/layout/Input";
 
 const Login = () => {
@@ -20,7 +20,12 @@ const Login = () => {
       const result = await login({ email, password });
       console.log("result", result.data.token);
       localStorage.setItem("token", result.data.token);
-      dispatch(setToken(result.data.token));
+      dispatch(
+        setCredentials({
+          user: result.data.user,
+          token: result.data.token,
+        })
+      );
       navigate("/");
     } catch (error) {
       console.log(error);

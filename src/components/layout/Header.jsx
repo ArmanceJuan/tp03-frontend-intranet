@@ -1,22 +1,32 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { Space } from "antd";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button, message, Space } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectCurrentUser,
+  removeCredentials,
+} from "../../store/authSlice.jsx";
+import { useLogoutMutation } from "../../store/apiSlice.jsx";
 import "../../css/layout.scss";
 
 const AppHeader = () => {
-  const user = {
-    firstname: "Marie",
-    lastname: "Dupont",
-    email: "marie.dupont@gmail.com",
-    phone: "0612345678",
-    birthdate: "1995-01-01",
-    city: "Paris",
-    country: "France",
-    photo:
-      "https://i.pinimg.com/736x/67/b2/cc/67b2cc4e28fcf735c303f1d43c1bd698.jpg",
-    category: "Marketing",
-    isAdmin: true,
+  const currentUser = useSelector(selectCurrentUser);
+  const [logout, { isLoading }] = useLogoutMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  console.log("currentUser", currentUser);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch(removeCredentials());
+      console.log("Logout");
+      message.success("Logout successful");
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <header>
       <Space direction="horizontal">
@@ -30,14 +40,18 @@ const AppHeader = () => {
               <li>
                 <NavLink to="/users">Users</NavLink>
               </li>
+              {currentUser?.isAdmin ? (
+                <li>
+                  <NavLink to="/users/add">Add user</NavLink>
+                </li>
+              ) : null}
               <li>
-                <NavLink to="/users/add">Add user</NavLink>
+                <NavLink to={`/users/${currentUser?.id}/view`}>Account</NavLink>
               </li>
               <li>
-                <NavLink to="/users/:id/view">Account</NavLink>
-              </li>
-              <li>
-                <NavLink to="/login">Logout</NavLink>
+                <Button type="primary" onClick={handleLogout}>
+                  Logout
+                </Button>
               </li>
             </Space>
           </ul>
