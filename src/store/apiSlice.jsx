@@ -12,6 +12,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
+  tagTypes: ["User", "AllUsers", "RandomUsers", "Login"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -35,12 +36,12 @@ export const apiSlice = createApi({
         }
       },
     }),
-    getRandomUsers: builder.query({
+    getRandomUser: builder.query({
       query: () => ({
         url: "/",
         method: "GET",
       }),
-      providesTags: ["RandomUsers"],
+      providesTags: ["User"],
     }),
     getAllUsers: builder.query({
       query: () => ({
@@ -57,10 +58,10 @@ export const apiSlice = createApi({
       providesTags: ["User"],
     }),
     editUser: builder.mutation({
-      query: (user) => ({
+      query: ({ id, ...userData }) => ({
         url: `/users/${id}/edit`,
         method: "PUT",
-        body: user,
+        body: userData,
       }),
       invalidatesTags: ["User"],
     }),
@@ -69,7 +70,7 @@ export const apiSlice = createApi({
         url: `/users/${id}/delete`,
         method: "DELETE",
       }),
-      invalidatesTags: ["AllUsers"],
+      invalidatesTags: ["User"],
     }),
     addUser: builder.mutation({
       query: (user) => ({
@@ -85,7 +86,7 @@ export const apiSlice = createApi({
 export const {
   useLoginMutation,
   useLogoutMutation,
-  useGetRandomUsersQuery,
+  useGetRandomUserQuery,
   useGetAllUsersQuery,
   useGetUserByIdQuery,
   useAddUserMutation,

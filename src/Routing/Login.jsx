@@ -10,7 +10,7 @@ import { Input } from "../components/layout/Input";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -18,8 +18,9 @@ const Login = () => {
     e.preventDefault();
     try {
       const result = await login({ email, password });
-      localStorage.setItem("token", result.token);
-      dispatch(setToken(result.token));
+      console.log("result", result.data.token);
+      localStorage.setItem("token", result.data.token);
+      dispatch(setToken(result.data.token));
       navigate("/");
     } catch (error) {
       console.log(error);
