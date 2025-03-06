@@ -46,7 +46,7 @@ const AppHeader = () => {
                 </li>
               ) : null}
               <li>
-                <NavLink to={`/users/${currentUser?.id}/view`}>Account</NavLink>
+                <NavLink to={`/user/${currentUser?.id}/view`}>Account</NavLink>
               </li>
               <li>
                 <Button type="primary" onClick={handleLogout}>

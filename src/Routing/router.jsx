@@ -30,11 +30,11 @@ const router = createBrowserRouter([
         element: <UserAdd />,
       },
       {
-        path: "/users/:id/view",
+        path: "/user/:id/view",
         element: <UserView />,
       },
       {
-        path: "/users/:id/edit",
+        path: "/user/:id/edit",
         element: <UserEdit />,
       },
     ],

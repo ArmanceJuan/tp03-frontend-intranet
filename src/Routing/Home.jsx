@@ -1,68 +1,74 @@
 import React from "react";
-import { Button, Space, Card, Row, Col } from "antd";
+import { Button, Space, Card, Row, Col, Spin, Empty } from "antd";
 import { useGetRandomUserQuery } from "../store/apiSlice.jsx";
 
+// OK
+// Revoir un peu la mise en forme
+
 const Home = () => {
-  const { data, refetch } = useGetRandomUserQuery();
+  const { data, refetch, isLoading } = useGetRandomUserQuery();
 
   const handleGreetSomeone = () => {
     refetch();
   };
 
-  // const user = [
-  //   {
-  //     id: "1",
-  //     gender: "male",
-  //     firstname: "Owen",
-  //     lastname: "Lopez",
-  //     email: "owen.lopez@example.com",
-  //     password: "$2b$10$IExQBXEZVifvfEOWvWsmO.4.OocNb7zQzurQerwOQh1tZx/3okSp.",
-  //     phone: "02-37-79-78-39",
-  //     birthdate: "1992-12-26",
-  //     city: "Villeurbanne",
-  //     country: "France",
-  //     photo: "https://randomuser.me/api/portraits/men/40.jpg",
-  //     category: "Marketing",
-  //     isAdmin: false,
-  //   },
-  // ];
+  if (isLoading) {
+    return (
+      <Space
+        direction="vertical"
+        align="center"
+        style={{ width: "100%", marginTop: 100 }}
+      >
+        <Spin size="large" />
+        <p>We search for a collaborator</p>
+      </Space>
+    );
+  }
 
-  const user = data?.user;
-  const firstname = user?.firstname;
-  const lastname = user?.lastname;
-  const category = user?.category;
-  const email = user?.email;
-  const phone = user?.phone;
-  const birthdate = user?.birthdate;
-  const city = user?.city;
-  const country = user?.country;
-  const photo = user?.photo;
+  if (!data || !data.user) {
+    return (
+      <Space
+        direction="vertical"
+        align="center"
+        style={{ width: "100%", marginTop: 100 }}
+      >
+        <Empty description="Oops, we can't find a collaborator, you are alone :(" />
+        <Button onClick={refetch} type="primary">
+          Réessayer
+        </Button>
+      </Space>
+    );
+  }
+
+  const user = data.user;
 
   return (
     <Space direction="vertical" align="center">
       <h1>Welcome</h1>
       <h2>Do you say hello ?</h2>
       <Card
-        title={`${firstname} ${lastname}`}
+        title={`${user.firstname} ${user.lastname}`}
         variant="borderless"
         style={{ width: 400 }}
-        extra={<span>{category}</span>}
+        extra={<span>{user.category}</span>}
       >
         <Row gutter={16}>
           <Col span={12}>
             <img
-              src={photo}
+              src={user.photo}
               alt="user"
               style={{ width: "100%", height: "100%" }}
             />
           </Col>
           <Col span={12}>
-            <p>{email}</p>
-            <p>{phone}</p>
+            <p>{user.email}</p>
+            <p>{user.phone}</p>
             <p>
-              {city}, {country}
+              {user.city}, {user.country}
             </p>
-            <p>{birthdate}</p>
+            <p>
+              {user.birthdate && new Date(user.birthdate).toLocaleDateString()}
+            </p>
           </Col>
         </Row>
       </Card>

@@ -7,6 +7,8 @@ import { useLoginMutation } from "../store/apiSlice.jsx";
 import { setCredentials } from "../store/authSlice.jsx";
 import { Input } from "../components/layout/Input";
 
+// PAGE OK
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

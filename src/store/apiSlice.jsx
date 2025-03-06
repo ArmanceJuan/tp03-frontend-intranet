@@ -12,7 +12,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["User", "AllUsers", "RandomUsers", "Login"],
+  tagTypes: ["User", "AllUsers", "RandomUsers", "Login", "UserData"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -52,33 +52,33 @@ export const apiSlice = createApi({
     }),
     getUserById: builder.query({
       query: (id) => ({
-        url: `/users/${id}/view`,
+        url: `/user/${id}/view`,
         method: "GET",
       }),
       providesTags: ["User"],
     }),
     editUser: builder.mutation({
       query: ({ id, ...userData }) => ({
-        url: `/users/${id}/edit`,
+        url: `/user/${id}/edit`,
         method: "PUT",
         body: userData,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["UserData"],
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/users/${id}/delete`,
+        url: `/user/${id}/delete`,
         method: "DELETE",
       }),
       invalidatesTags: ["User"],
     }),
     addUser: builder.mutation({
-      query: (user) => ({
-        url: "/users/add",
+      query: (userData) => ({
+        url: "/user/add",
         method: "POST",
-        body: user,
+        body: userData,
       }),
-      invalidatesTags: ["AllUsers"],
+      invalidatesTags: ["UserData"],
     }),
   }),
 });

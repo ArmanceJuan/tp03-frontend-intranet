@@ -1,4 +1,4 @@
-import { Space } from "antd";
+import { Space, Checkbox } from "antd";
 import React from "react";
 import "../../css/form.scss";
 
@@ -21,7 +21,7 @@ const InputSelectGender = ({ label, name, value, onChange }) => {
         <select name={name} value={value} onChange={onChange}>
           <option value="male">Male</option>
           <option value="female">Female</option>
-          <option value="female">Other</option>
+          <option value="other">Other</option>
         </select>
       </Space>
     </div>
@@ -43,4 +43,16 @@ const InputSelectCategory = ({ label, name, value, onChange }) => {
   );
 };
 
-export { Input, InputSelectGender, InputSelectCategory };
+const CheckboxForm = ({ label, name, checked, onChange }) => {
+  return (
+    <div className="input-container">
+      <Space size={16} direction="horizontal">
+        <Checkbox name={name} checked={checked} onChange={onChange}>
+          {label}
+        </Checkbox>
+      </Space>
+    </div>
+  );
+};
+
+export { Input, InputSelectGender, InputSelectCategory, CheckboxForm };

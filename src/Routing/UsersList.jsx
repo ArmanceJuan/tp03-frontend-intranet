@@ -1,19 +1,42 @@
 import React from "react";
-import { Button, Space, Card, Row, Col } from "antd";
+import { Button, Space, Card, Row, Col, message } from "antd";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../store/authSlice.jsx";
-import { useGetAllUsersQuery } from "../store/apiSlice.jsx";
+import {
+  useGetAllUsersQuery,
+  useDeleteUserMutation,
+} from "../store/apiSlice.jsx";
+import { useNavigate } from "react-router-dom";
 
 import "../css/index.scss";
 
+// RESTE A FAIRE LES FILTERS
+// et un peu de mise en forme
+
 const UsersList = () => {
   const currentUser = useSelector(selectCurrentUser);
-  console.log("currentUser", currentUser);
+  const navigate = useNavigate();
 
-  const { data } = useGetAllUsersQuery();
+  const { data, refetch } = useGetAllUsersQuery();
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const usersData = data?.users || [];
-  console.log("usersData", usersData);
+  const userId = usersData.map((user) => user._id);
+
+  const handleEdit = (userId) => {
+    navigate(`/user/${userId}/edit`);
+  };
+
+  const handleDelete = async (userId) => {
+    try {
+      await deleteUser(userId).unwrap();
+      message.success("User deleted successfully");
+      refetch();
+    } catch (error) {
+      console.log(error);
+      message.error("Error deleting user");
+    }
+  };
 
   return (
     <div>
@@ -50,7 +73,10 @@ const UsersList = () => {
                   </Col>
                   <Col span={12}>
                     <div>
-                      <p>{user.birthdate}</p>
+                      <p>
+                        {user.birthdate &&
+                          new Date(user.birthdate).toLocaleDateString()}
+                      </p>
                       <p>{user.email}</p>
                       <p>{user.phone}</p>
                       <p>
@@ -60,10 +86,18 @@ const UsersList = () => {
                     {currentUser?.isAdmin ? (
                       <div>
                         <Space direction="horizontal">
-                          <Button type="primary" size="middle">
+                          <Button
+                            type="primary"
+                            size="middle"
+                            onClick={() => handleEdit(user._id)}
+                          >
                             Edit
                           </Button>
-                          <Button type="primary" size="middle">
+                          <Button
+                            type="primary"
+                            size="middle"
+                            onClick={() => handleDelete(user._id)}
+                          >
                             Delete
                           </Button>
                         </Space>

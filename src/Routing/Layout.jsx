@@ -5,6 +5,8 @@ import AppHeader from "../components/layout/Header";
 import AppFooter from "../components/layout/Footer";
 import "../css/index.scss";
 
+// OK
+
 const AppLayout = () => {
   const { Header, Footer, Content } = Layout;
 
