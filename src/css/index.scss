@@ -16,3 +16,26 @@ nav ul li {
   background-color: #f3f3f3;
   border-radius: 15px;
 }
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80vw;
+  padding: 20px;
+}
+
+.search-by-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  width: 80vw;
+  margin-top: 20px;
+}
+
+.search-select {
+  display: flex;
+  flex-direction: column;
+  margin-inline: 10px;
+}

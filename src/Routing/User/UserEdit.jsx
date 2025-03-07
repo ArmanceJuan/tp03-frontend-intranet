@@ -19,7 +19,7 @@ const UserEdit = () => {
   console.log("user id", id);
 
   const { data, isLoading, error } = useGetUserByIdQuery(id);
-  const [updateUser, { isLoading: isUpdating }] = useEditUserMutation();
+  const [updateUser] = useEditUserMutation();
 
   console.log("data", data);
   console.log("currentUser", currentUser);
