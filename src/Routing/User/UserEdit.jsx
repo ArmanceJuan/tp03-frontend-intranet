@@ -55,7 +55,7 @@ const UserEdit = () => {
         email: data.user.email || "",
         password: "",
         phone: data.user.phone || "",
-        birthdate: data.user.birthdate || "",
+        birthdate: formattedDate || "",
         city: data.user.city || "",
         country: data.user.country || "",
         photo: data.user.photo || "",
