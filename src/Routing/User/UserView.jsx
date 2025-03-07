@@ -53,6 +53,7 @@ const UserView = () => {
     ? new Date(user.birthdate).toLocaleDateString()
     : "";
 
+  const canEdit = currentUser?.isAdmin || currentUser?.id === id;
   return (
     <div
       className="user-view-container"
@@ -81,7 +82,7 @@ const UserView = () => {
                 gap: "10px",
               }}
             >
-              {(currentUser?.isAdmin || currentUser?._id === id) && (
+              {canEdit && (
                 <Button
                   type="primary"
                   onClick={() => navigate(`/user/${id}/edit`)}

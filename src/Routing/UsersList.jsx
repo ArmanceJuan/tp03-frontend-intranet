@@ -11,9 +11,6 @@ import { useNavigate } from "react-router-dom";
 
 import "../css/index.scss";
 
-// RESTE A FAIRE LES FILTERS
-// et un peu de mise en forme
-
 const UsersList = () => {
   const currentUser = useSelector(selectCurrentUser);
   const navigate = useNavigate();
@@ -113,7 +110,11 @@ const UsersList = () => {
             <Button
               type="primary"
               size="small"
-              onClick={() => setSearchTerm("")}
+              onClick={() => {
+                setSearchTerm(""),
+                  setSearchBy("name"),
+                  setSearchFilterCategory("");
+              }}
             >
               Clear filters
             </Button>

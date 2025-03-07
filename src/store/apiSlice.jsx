@@ -36,6 +36,13 @@ export const apiSlice = createApi({
         }
       },
     }),
+    getCurrentUser: builder.query({
+      query: () => ({
+        url: "/user/current",
+        method: "GET",
+      }),
+      providesTags: ["UserData"],
+    }),
     getRandomUser: builder.query({
       query: () => ({
         url: "/",
@@ -48,14 +55,14 @@ export const apiSlice = createApi({
         url: "/users",
         method: "GET",
       }),
-      providesTags: ["AllUsers"],
+      providesTags: ["AllUsers", "UserData"],
     }),
     getUserById: builder.query({
       query: (id) => ({
         url: `/user/${id}/view`,
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["User", "UserData"],
     }),
     editUser: builder.mutation({
       query: ({ id, ...userData }) => ({
@@ -63,7 +70,7 @@ export const apiSlice = createApi({
         method: "PUT",
         body: userData,
       }),
-      invalidatesTags: ["UserData"],
+      invalidatesTags: ["UserData", "AllUsers"],
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
@@ -86,6 +93,7 @@ export const apiSlice = createApi({
 export const {
   useLoginMutation,
   useLogoutMutation,
+  useGetCurrentUserQuery,
   useGetRandomUserQuery,
   useGetAllUsersQuery,
   useGetUserByIdQuery,

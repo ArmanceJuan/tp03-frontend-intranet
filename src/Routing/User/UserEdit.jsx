@@ -101,7 +101,7 @@ const UserEdit = () => {
 
   return (
     <div className="form-container">
-      {currentUser?.isAdmin ? (
+      {canEdit ? (
         <>
           <h1>Edit user</h1>
           <form onSubmit={handleSubmit}>
@@ -204,7 +204,7 @@ const UserEdit = () => {
           </form>
         </>
       ) : (
-        <h1>You are not allowed to add a user</h1>
+        <h1>You are not allowed to edit a user</h1>
       )}
     </div>
   );
