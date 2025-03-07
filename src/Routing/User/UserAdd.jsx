@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Button } from "antd";
+import { Button, message, Alert } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -12,14 +12,13 @@ import {
 import { selectCurrentUser } from "../../store/authSlice.jsx";
 import { useAddUserMutation } from "../../store/apiSlice.jsx";
 
-// OK mais sécuriser le formulaire
-
 const UserAdd = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
-  const [addUser, { isLoading }] = useAddUserMutation();
+  const [addUser, { isLoading, error: apiError }] = useAddUserMutation();
 
-  console.log("currentUser", currentUser);
+  const [formErrors, setFormErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
 
   const [formData, setFormData] = useState({
     firstname: "",
@@ -41,26 +40,99 @@ const UserAdd = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (formErrors[name]) {
+      setFormErrors({
+        ...formErrors,
+        [name]: null,
+      });
+    }
   };
 
   const handleCheckboxChange = (e) => {
     setFormData({ ...formData, isAdmin: e.target.checked });
   };
 
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.firstname.trim()) {
+      errors.firstname = "Firstname is required";
+    } else if (formData.firstname.length < 3) {
+      errors.firstname = "Firstname must be at least 3 characters";
+    }
+
+    if (!formData.lastname.trim()) {
+      errors.lastname = "Lastname is required";
+    } else if (formData.lastname.length < 3) {
+      errors.lastname = "Lastname must be at least 3 characters";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!formData.email.includes("@") && !formData.email.length < 3) {
+      errors.email = "Email must be valid";
+    }
+
+    if (!formData.password.trim()) {
+      errors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      errors.password = "Password must be at least 8 characters";
+    }
+
+    if (!formData.confirm.trim()) {
+      errors.confirm = "Confirm password is required";
+    } else if (formData.password !== formData.confirm) {
+      errors.confirm = "Passwords do not match";
+    }
+
+    if (!formData.phone.trim()) {
+      errors.phone = "Phone is required";
+    }
+    if (!formData.birthdate.trim()) {
+      errors.birthdate = "Birthdate is required";
+    }
+    if (!formData.city.trim()) {
+      errors.city = "City is required";
+    }
+    if (!formData.country.trim()) {
+      errors.country = "Country is required";
+    }
+    if (!formData.photo.trim()) {
+      errors.photo = "Photo is required";
+    }
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (e.target.confirm.value !== formData.password) {
-      message.error("Passwords do not match");
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
       return;
     }
+    setFormErrors({});
+    setGeneralError("");
     const { confirm, ...userData } = formData;
+
     try {
       const result = await addUser(userData);
       navigate("/users", { replace: true });
       message.success("User added successfully");
     } catch (error) {
       console.log(error);
-      message.error("Error adding user");
+      if (error.status === 400) {
+        if (error.data?.message === "Email already in use") {
+          setFormErrors({
+            ...formErrors,
+            email: "Email already in use",
+          });
+        } else if (error.data?.message.includes("required fields")) {
+          setGeneralError("Please fill all required fields");
+        } else {
+          setGeneralError(error.data?.message || "Error adding user");
+        }
+      } else {
+        setGeneralError("Error adding user, please try again");
+      }
     }
   };
   return (
@@ -68,6 +140,15 @@ const UserAdd = () => {
       {currentUser?.isAdmin ? (
         <>
           <h1>Add a user</h1>
+          {generalError && (
+            <Alert
+              message="Erreur"
+              description={generalError}
+              type="error"
+              showIcon
+              style={{ margin: "20px" }}
+            />
+          )}
           <form onSubmit={handleSubmit}>
             <div className="all-input">
               <Input
@@ -76,6 +157,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.firstname}
                 onChange={handleChange}
+                error={formErrors.firstname}
               />
               <Input
                 label="Lastname"
@@ -83,6 +165,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.lastname}
                 onChange={handleChange}
+                error={formErrors.lastname}
               />
               <InputSelectGender
                 label="Gender"
@@ -90,6 +173,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.gender}
                 onChange={handleChange}
+                error={formErrors.gender}
               />
               <InputSelectCategory
                 label="Category"
@@ -97,6 +181,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.category}
                 onChange={handleChange}
+                error={formErrors.category}
               />
               <Input
                 label="Email"
@@ -104,6 +189,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.email}
                 onChange={handleChange}
+                error={formErrors.email}
               />
               <Input
                 label="Password"
@@ -111,6 +197,7 @@ const UserAdd = () => {
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
+                error={formErrors.password}
               />
               <Input
                 label="Confirm password"
@@ -118,6 +205,7 @@ const UserAdd = () => {
                 type="password"
                 value={formData.confirm}
                 onChange={handleChange}
+                error={formErrors.confirm}
               />
               <Input
                 label="Phone"
@@ -125,6 +213,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.phone}
                 onChange={handleChange}
+                error={formErrors.phone}
               />
               <Input
                 label="Birthdate"
@@ -132,6 +221,7 @@ const UserAdd = () => {
                 type="date"
                 value={formData.birthdate}
                 onChange={handleChange}
+                error={formErrors.birthdate}
               />
               <Input
                 label="City"
@@ -139,6 +229,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.city}
                 onChange={handleChange}
+                error={formErrors.city}
               />
               <Input
                 label="Country"
@@ -146,6 +237,7 @@ const UserAdd = () => {
                 type="text"
                 value={formData.country}
                 onChange={handleChange}
+                error={formErrors.country}
               />
               <Input
                 label="Photo"
@@ -172,7 +264,12 @@ const UserAdd = () => {
           </form>
         </>
       ) : (
-        <h1>You are not allowed to add a user</h1>
+        <Alert
+          message="Acces denied"
+          description="You are not allowed to add a user"
+          type="error"
+          showIcon
+        />
       )}
     </div>
   );

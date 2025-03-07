@@ -2,12 +2,19 @@ import { Space, Checkbox } from "antd";
 import React from "react";
 import "../../css/form.scss";
 
-const Input = ({ label, name, type, value, onChange }) => {
+const Input = ({ label, name, type, value, onChange, error }) => {
   return (
     <div className="input-container">
       <Space size={16} direction="horizontal">
         <label htmlFor={name}>{label} :</label>
-        <input type={type} name={name} value={value} onChange={onChange} />
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          style={error ? { borderColor: "red" } : {}}
+        />
+        {error && <p className="error-message">{error}</p>}
       </Space>
     </div>
   );
